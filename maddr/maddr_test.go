@@ -9,28 +9,58 @@ import (
 )
 
 func TestDecode(t *testing.T) {
-	didpayUSDC := didcore.Service{
-		Type:            maddr.MoneyAddrKind,
-		ID:              "didpay",
-		ServiceEndpoint: []string{"urn:usdc:eth:0x2345y7432"},
+	vectors := []struct {
+		input            string
+		expectedCurrency string
+		expectedCSS      string
+		err              bool
+	}{
+		{
+			input:            "urn:usdc:eth:0x2345y7432",
+			expectedCurrency: "usdc",
+			expectedCSS:      "eth:0x2345y7432",
+		},
+		{
+			input:            "urn:btc:addr:m12345677axcv2345",
+			expectedCurrency: "btc",
+			expectedCSS:      "addr:m12345677axcv2345",
+		},
+		{
+			input:            "urn:btc:lnurl:https://someurl.com",
+			expectedCurrency: "btc",
+			expectedCSS:      "lnurl:https://someurl.com",
+		},
+		{
+			input:            "urn:btc:spaddr:sp1234abcd5678",
+			expectedCurrency: "btc",
+			expectedCSS:      "spaddr:sp1234abcd5678",
+		},
 	}
 
-	maddrs, err := maddr.FromDIDService(didpayUSDC)
-	assert.NoError(t, err)
-	assert.Len(t, maddrs, 1)
+	for _, v := range vectors {
+		t.Run(v.input, func(t *testing.T) {
+			did := didcore.Service{
+				Type:            maddr.MoneyAddrKind,
+				ID:              "didpay",
+				ServiceEndpoint: []string{v.input},
+			}
+			actual, err := maddr.FromDIDService(did)
 
-	m := maddrs[0]
-	assert.Equal(t, m.Currency, "usdc")
+			if v.err {
+				assert.Error(t, err)
+				assert.Nil(t, actual)
+			} else {
+				assert.NoError(t, err)
+				assert.NotNil(t, actual)
 
-	// muunBTC := didcore.Service{
-	// 	Type:            maddr.MoneyAddrKind,
-	// 	ID:              "muun",
-	// 	ServiceEndpoint: "urn:btc:addr:m12345677axcv2345",
-	// }
+				assert.Len(t, actual, 1)
+				actualMaddr := actual[0]
 
-	// lnURL := didcore.Service{
-	// 	Type:            maddr.MoneyAddrKind,
-	// 	ID:              "lnurl",
-	// 	ServiceEndpoint: "urn:btc:lnurl:https://someurl.com",
-	// }
+				assert.Equal(t, v.expectedCurrency, actualMaddr.Currency)
+				assert.Equal(t, v.expectedCSS, actualMaddr.CSS)
+				assert.Equal(t, v.expectedCurrency, actualMaddr.URN.NID)
+				assert.Equal(t, v.expectedCSS, actualMaddr.URN.NSS)
+			}
+		})
+	}
 }
