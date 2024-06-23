@@ -16,7 +16,8 @@ func TestRegistration(t *testing.T) {
 	}
 
 	r := dap.NewRegistration("moegrammer", "didpay.me", bearerDID.URI)
-	r.Sign(bearerDID)
+	err = r.Sign(bearerDID)
+	assert.NoError(t, err)
 
 	_, err = r.Verify()
 	assert.NoError(t, err)

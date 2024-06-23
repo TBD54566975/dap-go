@@ -14,15 +14,15 @@ func TestParse(t *testing.T) {
 		err      bool
 	}{
 		{
-			input:    "moegrammer@didpay.me",
+			input:    "@moegrammer/didpay.me",
 			expected: dap.DAP{Handle: "moegrammer", Domain: "didpay.me"},
 		},
 		{
-			input:    "moegrammer@www.linkedin.com",
+			input:    "@moegrammer/www.linkedin.com",
 			expected: dap.DAP{Handle: "moegrammer", Domain: "www.linkedin.com"},
 		},
 		{
-			input:    "💰@cash.app",
+			input:    "@💰/cash.app",
 			expected: dap.DAP{Handle: "💰", Domain: "cash.app"},
 		},
 		{
@@ -43,6 +43,18 @@ func TestParse(t *testing.T) {
 		},
 		{
 			input: "@@",
+			err:   true,
+		},
+		{
+			input: "/",
+			err:   true,
+		},
+		{
+			input: "@/",
+			err:   true,
+		},
+		{
+			input: "moegrammer@cash.app",
 			err:   true,
 		},
 	}

@@ -43,7 +43,7 @@ func NewClient(opts ...NewClientOption) Client {
 		o(&options)
 	}
 
-	return Client{http: options.http}
+	return Client{http: options.http} //nolint:gosimple
 }
 
 func (c Client) Register(ctx context.Context, r RegistrationRequest) (*RegistrationResponse, error) {

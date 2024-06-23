@@ -11,16 +11,22 @@ const (
 	ServiceType string = "dapregistry"
 )
 
+var ErrInvalidDAP = errors.New("invalid dap. expected format '@<handle>/domain'")
+
 // TODO: remove this eventually
 var client = NewClient()
 
 func Parse(input string) (*DAP, error) {
-	delimIdx := strings.LastIndex(input, "@")
-	if delimIdx == -1 {
-		return nil, errors.New("expected format '<handle>@domain'")
+	if input[0] != '@' {
+		return nil, ErrInvalidDAP
 	}
 
-	handle := input[:delimIdx]
+	delimIdx := strings.LastIndex(input[:], "/")
+	if delimIdx == -1 {
+		return nil, ErrInvalidDAP
+	}
+
+	handle := input[1:delimIdx]
 	domain := input[delimIdx+1:]
 
 	if len(domain) == 0 {
@@ -48,7 +54,7 @@ type DAP struct {
 }
 
 func (d DAP) String() string {
-	return fmt.Sprintf("%s@%s", d.Handle, d.Domain)
+	return fmt.Sprintf("@%s/%s", d.Handle, d.Domain)
 }
 
 func (d DAP) MarshalText() ([]byte, error) {
