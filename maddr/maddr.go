@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	MoneyAddrKind = "maddr"
+	MoneyAddrKind = "MoneyAddress"
 )
 
 type MoneyAddress struct {
