@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	ServiceType string = "dapregistry"
+	ServiceType string = "DAPRegistry"
 )
 
 var ErrInvalidDAP = errors.New("invalid dap. expected format '@<handle>/domain'")
