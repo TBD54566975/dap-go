@@ -12,28 +12,33 @@ func TestDecode(t *testing.T) {
 	vectors := []struct {
 		input            string
 		expectedCurrency string
-		expectedCSS      string
+		expectedProtocol string
+		expectedPSS      string
 		err              bool
 	}{
 		{
 			input:            "urn:usdc:eth:0x2345y7432",
 			expectedCurrency: "usdc",
-			expectedCSS:      "eth:0x2345y7432",
+			expectedProtocol: "eth",
+			expectedPSS:      "0x2345y7432",
 		},
 		{
 			input:            "urn:btc:addr:m12345677axcv2345",
 			expectedCurrency: "btc",
-			expectedCSS:      "addr:m12345677axcv2345",
+			expectedProtocol: "addr",
+			expectedPSS:      "m12345677axcv2345",
 		},
 		{
 			input:            "urn:btc:lnurl:https://someurl.com",
 			expectedCurrency: "btc",
-			expectedCSS:      "lnurl:https://someurl.com",
+			expectedProtocol: "lnurl",
+			expectedPSS:      "https://someurl.com",
 		},
 		{
 			input:            "urn:btc:spaddr:sp1234abcd5678",
 			expectedCurrency: "btc",
-			expectedCSS:      "spaddr:sp1234abcd5678",
+			expectedProtocol: "spaddr",
+			expectedPSS:      "sp1234abcd5678",
 		},
 	}
 
@@ -57,9 +62,10 @@ func TestDecode(t *testing.T) {
 				actualMaddr := actual[0]
 
 				assert.Equal(t, v.expectedCurrency, actualMaddr.Currency)
-				assert.Equal(t, v.expectedCSS, actualMaddr.CSS)
+				assert.Equal(t, v.expectedProtocol, actualMaddr.Protocol)
+				assert.Equal(t, v.expectedPSS, actualMaddr.PSS)
 				assert.Equal(t, v.expectedCurrency, actualMaddr.URN.NID)
-				assert.Equal(t, v.expectedCSS, actualMaddr.URN.NSS)
+				assert.Equal(t, v.expectedProtocol+":"+v.expectedPSS, actualMaddr.URN.NSS)
 			}
 		})
 	}

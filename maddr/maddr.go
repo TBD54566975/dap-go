@@ -2,6 +2,7 @@ package maddr
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/TBD54566975/dap-go/maddr/urn"
 	"github.com/tbd54566975/web5-go/dids/didcore"
@@ -15,7 +16,8 @@ type MoneyAddress struct {
 	ID       string
 	URN      urn.URN
 	Currency string
-	CSS      string
+	Protocol string
+	PSS      string
 }
 
 func FromDIDService(svc didcore.Service) ([]MoneyAddress, error) {
@@ -31,11 +33,17 @@ func FromDIDService(svc didcore.Service) ([]MoneyAddress, error) {
 			return nil, fmt.Errorf("invalid money address: %w", err)
 		}
 
+		delimIDX := strings.IndexRune(urn.NSS, ':')
+		if delimIDX == -1 {
+			return nil, fmt.Errorf("invalid money address. expected urn:[currency]:[protocol]:[pss]. got %s", se)
+		}
+
 		maddr := MoneyAddress{
 			URN:      urn,
 			ID:       svc.ID,
 			Currency: urn.NID,
-			CSS:      urn.NSS,
+			Protocol: urn.NSS[:delimIDX],
+			PSS:      urn.NSS[delimIDX+1:],
 		}
 
 		maddrs[i] = maddr

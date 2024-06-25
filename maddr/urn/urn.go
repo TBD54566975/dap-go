@@ -14,7 +14,7 @@ func Parse(input string) (URN, error) {
 
 	delimIDX := strings.IndexRune(urnless, ':')
 	if delimIDX == -1 {
-		return URN{}, fmt.Errorf("invalid money address. expected urn:[currency]:[css]. got %s", input)
+		return URN{}, fmt.Errorf("invalid money address. expected urn:[currency]:[protocol]:[pss]. got %s", input)
 	}
 
 	return URN{
