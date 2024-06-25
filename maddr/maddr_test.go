@@ -40,7 +40,7 @@ func TestDecode(t *testing.T) {
 	for _, v := range vectors {
 		t.Run(v.input, func(t *testing.T) {
 			did := didcore.Service{
-				Type:            maddr.MoneyAddrKind,
+				Type:            maddr.MoneyAddressKind,
 				ID:              "didpay",
 				ServiceEndpoint: []string{v.input},
 			}

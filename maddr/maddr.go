@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	MoneyAddrKind = "maddr"
+	MoneyAddressKind = "MoneyAddress"
 )
 
 type MoneyAddress struct {
@@ -19,7 +19,7 @@ type MoneyAddress struct {
 }
 
 func FromDIDService(svc didcore.Service) ([]MoneyAddress, error) {
-	if svc.Type != MoneyAddrKind {
+	if svc.Type != MoneyAddressKind {
 		return nil, fmt.Errorf("invalid service type: %s", svc.Type)
 	}
 
