@@ -26,28 +26,40 @@ func FromDIDService(svc didcore.Service) ([]MoneyAddress, error) {
 	}
 
 	maddrs := make([]MoneyAddress, len(svc.ServiceEndpoint))
-
 	for i, se := range svc.ServiceEndpoint {
-		urn, err := urn.Parse(se)
+		maddr, err := Parse(svc.ID, se)
 		if err != nil {
 			return nil, fmt.Errorf("invalid money address: %w", err)
 		}
+		maddrs[i] = *maddr
+	}
+	return maddrs, nil
+}
 
-		delimIDX := strings.IndexRune(urn.NSS, ':')
-		if delimIDX == -1 {
-			return nil, fmt.Errorf("invalid money address. expected urn:[currency]:[protocol]:[pss]. got %s", se)
-		}
-
-		maddr := MoneyAddress{
-			URN:      urn,
-			ID:       svc.ID,
-			Currency: urn.NID,
-			Protocol: urn.NSS[:delimIDX],
-			PSS:      urn.NSS[delimIDX+1:],
-		}
-
-		maddrs[i] = maddr
+func Parse(serviceID string, maddrURN string) (*MoneyAddress, error) {
+	urn, err := urn.Parse(maddrURN)
+	if err != nil {
+		return nil, fmt.Errorf("invalid money address: %w", err)
 	}
 
-	return maddrs, nil
+	delimIDX := strings.IndexRune(urn.NSS, ':')
+	if delimIDX == -1 {
+		return nil, fmt.Errorf("invalid money address. expected urn:[currency]:[protocol]:[pss]. got %s", maddrURN)
+	}
+
+	return &MoneyAddress{
+		URN:      urn,
+		ID:       serviceID,
+		Currency: urn.NID,
+		Protocol: urn.NSS[:delimIDX],
+		PSS:      urn.NSS[delimIDX+1:],
+	}, nil
+}
+
+func MustParse(serviceID string, maddrURN string) MoneyAddress {
+	maddr, err := Parse(serviceID, maddrURN)
+	if err != nil {
+		panic(`maddr: Parse(` + maddrURN + `): ` + err.Error())
+	}
+	return *maddr
 }
