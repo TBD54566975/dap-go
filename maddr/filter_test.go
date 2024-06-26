@@ -4,7 +4,6 @@ import (
 	"github.com/TBD54566975/dap-go/maddr"
 	"github.com/alecthomas/assert"
 	"github.com/tbd54566975/web5-go/dids/didcore"
-	"reflect"
 	"testing"
 )
 
@@ -22,10 +21,8 @@ func TestFilter(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, out)
 	assert.Len(t, out, 1)
-	actualMaddr := out[0]
-	if !reflect.DeepEqual(actualMaddr, expectedOut) {
-		t.Errorf("Filter() got = %v, want %v", expectedOut, actualMaddr)
-	}
+	actual := out[0]
+	assert.Equal(t, expectedOut, actual)
 }
 
 func parseMoneyAddresses(t *testing.T, maddrs []string) []maddr.MoneyAddress {
