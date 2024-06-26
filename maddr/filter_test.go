@@ -1,4 +1,4 @@
-package dap
+package maddr_test
 
 import (
 	"github.com/TBD54566975/dap-go/maddr"
@@ -17,7 +17,7 @@ func TestFilter(t *testing.T) {
 		Phone:        "254712345678",
 	}
 
-	out, err := Filter(maddrs, maddr.KESMoneyAddressFilter)
+	out, err := maddr.Filter(maddrs, maddr.KESMoneyAddressFilter)
 
 	assert.NoError(t, err)
 	assert.NotNil(t, out)
