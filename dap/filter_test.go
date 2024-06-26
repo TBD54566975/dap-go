@@ -24,7 +24,7 @@ func TestFilter(t *testing.T) {
 	assert.Len(t, out, 1)
 	actualMaddr := out[0]
 	if !reflect.DeepEqual(actualMaddr, expectedOut) {
-		t.Errorf("NewKESAddress() got = %v, want %v", expectedOut, actualMaddr)
+		t.Errorf("Filter() got = %v, want %v", expectedOut, actualMaddr)
 	}
 }
 
