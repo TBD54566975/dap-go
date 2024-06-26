@@ -10,7 +10,7 @@ import (
 
 func TestFilter(t *testing.T) {
 	input := []string{"urn:kes:momo:mpesa:254712345678", "urn:usdc:eth:0x2345y7432", "urn:btc:addr:m12345677axcv2345", "urn:btc:lnurl:https://someurl.com", "urn:btc:spaddr:sp1234abcd5678"}
-	maddrs := dirtyParse(t, input)
+	maddrs := parseMoneyAddresses(t, input)
 	expectedOut := maddr.KESMobileMoneyAddress{
 		MoneyAddress: *newMoneyAddress(t, "urn:kes:momo:mpesa:254712345678"),
 		Carrier:      "mpesa",
@@ -28,7 +28,7 @@ func TestFilter(t *testing.T) {
 	}
 }
 
-func dirtyParse(t *testing.T, maddrs []string) []maddr.MoneyAddress {
+func parseMoneyAddresses(t *testing.T, maddrs []string) []maddr.MoneyAddress {
 	did := didcore.Service{
 		Type:            maddr.MoneyAddrKind,
 		ID:              "didpay",
