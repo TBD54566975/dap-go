@@ -13,7 +13,6 @@ const (
 )
 
 type MoneyAddress struct {
-	ID       string
 	URN      urn.URN
 	Currency string
 	Protocol string
@@ -27,7 +26,7 @@ func FromDIDService(svc didcore.Service) ([]MoneyAddress, error) {
 
 	maddrs := make([]MoneyAddress, len(svc.ServiceEndpoint))
 	for i, se := range svc.ServiceEndpoint {
-		maddr, err := Parse(svc.ID, se)
+		maddr, err := Parse(se)
 		if err != nil {
 			return nil, fmt.Errorf("invalid money address: %w", err)
 		}
@@ -36,7 +35,7 @@ func FromDIDService(svc didcore.Service) ([]MoneyAddress, error) {
 	return maddrs, nil
 }
 
-func Parse(serviceID string, maddrURN string) (*MoneyAddress, error) {
+func Parse(maddrURN string) (*MoneyAddress, error) {
 	urn, err := urn.Parse(maddrURN)
 	if err != nil {
 		return nil, fmt.Errorf("invalid money address: %w", err)
@@ -49,15 +48,14 @@ func Parse(serviceID string, maddrURN string) (*MoneyAddress, error) {
 
 	return &MoneyAddress{
 		URN:      urn,
-		ID:       serviceID,
 		Currency: urn.NID,
 		Protocol: urn.NSS[:delimIDX],
 		PSS:      urn.NSS[delimIDX+1:],
 	}, nil
 }
 
-func MustParse(serviceID string, maddrURN string) MoneyAddress {
-	maddr, err := Parse(serviceID, maddrURN)
+func MustParse(maddrURN string) MoneyAddress {
+	maddr, err := Parse(maddrURN)
 	if err != nil {
 		panic(`maddr: Parse(` + maddrURN + `): ` + err.Error())
 	}

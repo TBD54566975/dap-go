@@ -11,7 +11,7 @@ func TestFilter(t *testing.T) {
 	input := []string{"urn:kes:momo:mpesa:254712345678", "urn:usdc:eth:0x2345y7432", "urn:btc:addr:m12345677axcv2345", "urn:btc:lnurl:https://someurl.com", "urn:btc:spaddr:sp1234abcd5678"}
 	maddrs := parseMoneyAddresses(t, input)
 	expectedOut := maddr.KESMobileMoneyAddress{
-		MoneyAddress: maddr.MustParse("id", "urn:kes:momo:mpesa:254712345678"),
+		MoneyAddress: maddr.MustParse("urn:kes:momo:mpesa:254712345678"),
 		Carrier:      "mpesa",
 		Phone:        "254712345678",
 	}
